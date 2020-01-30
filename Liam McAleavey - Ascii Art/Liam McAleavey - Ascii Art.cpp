@@ -11,13 +11,12 @@
 using namespace std;
 
 void DisplayMenu();
-int ProcessMenuInput();
-int PromptForInteger();
-void MakeSquare();
-void MakeRightTriangle();
-void MakeIsoscelesTriangle();
-void MakeHourglass();
-void MakeDiamond();
+int PromptForInteger(int minRange, int maxRange, string shapeName);
+void MakeSquare(int size);
+void MakeRightTriangle(int size);
+void MakeIsoscelesTriangle(int size, bool reverse, bool cutTop);
+void MakeHourglass(int size);
+void MakeDiamond(int size);
 
 int main()
 {
@@ -35,24 +34,24 @@ int main()
         DisplayMenu();
 
         //Now start getting their input
-        userInput = ProcessMenuInput();
+        userInput = PromptForInteger(1, 6, "menu");
 
         switch (userInput)
         {
             case 1:
-                MakeSquare();
+                MakeSquare(PromptForInteger(1, 20, "square"));
                 break;
             case 2:
-                MakeRightTriangle();
+                MakeRightTriangle(PromptForInteger(1, 20, "right triangle"));
                 break;
             case 3:
-                MakeIsoscelesTriangle();
+                MakeIsoscelesTriangle(PromptForInteger(1, 20, "isosceles triangle"), false, false);
                 break;
             case 4:
-                MakeHourglass();
+                MakeHourglass(PromptForInteger(1, 20, "hourglass"));
                 break;
             case 5:
-                MakeDiamond();
+                MakeDiamond(PromptForInteger(1, 20, "diamond"));
                 break;
             default:
                 cout << "Thank you for using our application!  Good-bye!";
@@ -75,50 +74,144 @@ void DisplayMenu()
          << endl;
 }
 
-int ProcessMenuInput()
+int PromptForInteger(int minRange, int maxRange, string shapeName)
 {
-    int input = 0;  //this will store whatever the user inputs
+    int input = 0;          // this will store whatever the user inputs
 
-    cout << "Please select a menu option(1-6)" << endl;
+    if (shapeName == "menu")
+    {
+        cout << "Please select a menu option(1-6)" << endl;
+    }
+
+    else
+    {
+        cout << "You have selected a " << shapeName << "! What size should your " << shapeName
+             << " be (" << minRange << "-" << maxRange << ")?" << endl;
+    }
+
     cin >> input;
 
-    while (input < 1 || input > 6)
+    while (input < minRange || input > maxRange)
     {
-        cout << "You have not selected a valid menu option, please try again." << endl
-             << "Please select a menu option(1-6)" << endl;
-        cin >> input;
+        if (shapeName == "menu")
+        {
+            cout << "You have not selected a valid menu option, please try again." << endl
+                 << "Please select a menu option(1-6)" << endl;
+        }
 
+        else
+        {
+            cout << "You have not selected an appropriate size, please try again." << endl
+                 << "You have selected a " << shapeName << "! What size should your " << shapeName
+                 << " be (" << minRange << "-" << maxRange << ")?" << endl;
+        }
+
+        cin >> input;
     }
 
     return input;
 }
 
-int PromptForInteger()
+void MakeSquare(int size)
 {
-    return 0;
+    for (int i = 0; i < size; i++)
+    {
+        for (int i = 0; i < size; i++)
+        {
+            cout << "*";
+        }
+        cout << endl;
+    }
 }
 
-void makeSquare()
+void MakeRightTriangle(int size)
 {
-    cout << "Square!" << endl;
+    int rowSentinel = 1;
+
+    for (int i = 0; i < size; i++)
+    {
+        for (int j = 0; j < rowSentinel; j++)
+        {
+            cout << "*";
+        }
+        cout << endl;
+        rowSentinel++;
+    }
 }
 
-void makeRightTriangle()
+void MakeIsoscelesTriangle(int size, bool reverse, bool cutTop)
 {
-    cout << "R Triangle!" << endl;
+    if (!reverse)
+    {
+        int spacesToPrint = (((size * 2) - 1) / 2);
+        int astToPrint = 1;
+
+        if (cutTop)
+        {
+            spacesToPrint--;
+            astToPrint += 2;
+            size--;
+        }
+
+        for (int i = 0; i < size; i++)
+        {
+            for (int j = 0; j < spacesToPrint; j++)
+            {
+                cout << " ";
+            }
+
+            for (int j = 0; j < astToPrint; j++)
+            {
+                cout << "*";
+            }
+
+            cout << endl;
+
+            spacesToPrint--;
+            astToPrint += 2;
+        }
+    }
+
+    else
+    {
+        int spacesToPrint = 0;
+        int astToPrint = ((size * 2) - 1);
+
+        if (cutTop)
+        {
+            spacesToPrint++;
+            astToPrint -= 2;
+            size--;
+        }
+
+        for (int i = 0; i < size; i++)
+        {
+            for (int j = 0; j < spacesToPrint; j++)
+            {
+                cout << " ";
+            }
+
+            for (int j = 0; j < astToPrint; j++)
+            {
+                cout << "*";
+            }
+
+            cout << endl;
+
+            spacesToPrint++;
+            astToPrint -= 2;
+        }
+    }
 }
 
-void makeIsoscelesTriangle()
+void MakeHourglass(int size)
 {
-    cout << "I Triangle!" << endl;
+    MakeIsoscelesTriangle(size, true, false);
+    MakeIsoscelesTriangle(size, false, true);
 }
 
-void makeHourglass()
+void MakeDiamond(int size)
 {
-    cout << "Hourglass!" << endl;
-}
-
-void makeDiamond()
-{
-    cout << "Diamond!" << endl;
+    MakeIsoscelesTriangle(size, false, false);
+    MakeIsoscelesTriangle(size, true, true);
 }
